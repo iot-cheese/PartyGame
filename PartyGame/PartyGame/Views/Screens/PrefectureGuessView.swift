@@ -89,8 +89,8 @@ struct PrefectureGuessView: View {
                                 .font(.title)
                                 .fontWeight(.bold)
                             
-                            // プレースホルダー画像（後で実際の画像に置き換え）
-                            Image(systemName: "map.fill")
+                            // 都道府県の画像
+                            Image(prefecture.imageName)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 250, height: 250)
@@ -163,20 +163,11 @@ struct PrefectureAnswerDialog: View {
                         .font(.system(size: 48, weight: .bold))
                         .foregroundColor(.green)
                     
-                    // 都道府県の画像（存在する場合）
-                    if UIImage(named: prefecture.imageName) != nil {
-                        Image(prefecture.imageName)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 200, height: 200)
-                    } else {
-                        // プレースホルダー画像
-                        Image(systemName: "map.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 200, height: 200)
-                            .foregroundColor(.green)
-                    }
+                    // 都道府県の画像
+                    Image(prefecture.imageName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 200, height: 200)
                 }
                 
                 Spacer()
