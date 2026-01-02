@@ -37,6 +37,8 @@ struct ContentView: View {
             GrandparentGuessView(appViewModel: viewModel)
         case .pitchGuess:
             PitchGuessView(appViewModel: viewModel)
+        case .wordFlash:
+            WordFlashView(appViewModel: viewModel)
         }
     }
 }
