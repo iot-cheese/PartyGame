@@ -33,6 +33,8 @@ struct ContentView: View {
             FiveSecondStopView(appViewModel: viewModel)
         case .prefectureGuess:
             PrefectureGuessView(appViewModel: viewModel)
+        case .grandparentGuess:
+            GrandparentGuessView(appViewModel: viewModel)
         }
     }
 }
