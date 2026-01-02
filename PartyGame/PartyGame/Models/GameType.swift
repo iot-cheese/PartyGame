@@ -11,6 +11,7 @@ enum GameType: String, CaseIterable, Identifiable {
     case fiveSecondStop = "5秒ストップ"
     case prefectureGuess = "都道府県当て"
     case grandparentGuess = "おじいちゃんorおばあちゃん"
+    case pitchGuess = "音階当て"
     
     var id: String { self.rawValue }
     
@@ -22,6 +23,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "一瞬表示される都道府県の形を当てよう！"
         case .grandparentGuess:
             return "おじいちゃん？おばあちゃん？"
+        case .pitchGuess:
+            return "流れた音階を当てよう！"
         }
     }
     
@@ -33,6 +36,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "map"
         case .grandparentGuess:
             return "person.2"
+        case .pitchGuess:
+            return "music.note"
         }
     }
 }

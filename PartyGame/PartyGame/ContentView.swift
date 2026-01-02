@@ -35,6 +35,8 @@ struct ContentView: View {
             PrefectureGuessView(appViewModel: viewModel)
         case .grandparentGuess:
             GrandparentGuessView(appViewModel: viewModel)
+        case .pitchGuess:
+            PitchGuessView(appViewModel: viewModel)
         }
     }
 }
