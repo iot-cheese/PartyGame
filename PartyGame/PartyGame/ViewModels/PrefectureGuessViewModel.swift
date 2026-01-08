@@ -28,6 +28,7 @@ class PrefectureGuessViewModel: ObservableObject {
     func startGame() {
         gameState = .countdown
         countdownNumber = 3
+        currentPrefecture = nil // Clear current
         startCountdown()
     }
     
@@ -42,19 +43,27 @@ class PrefectureGuessViewModel: ObservableObject {
                 self.playSound(named: "countdown")
             } else {
                 self.timer?.invalidate()
-                self.showRandomPrefecture()
+                self.showPrefecture()
             }
         }
     }
     
-    private func showRandomPrefecture() {
+    private func showPrefecture() {
         gameState = .showing
-        currentPrefecture = Prefecture.all.randomElement()
+        // If currentPrefecture is nil (new game), pick random. Otherwise (show again), keep it.
+        if currentPrefecture == nil {
+             currentPrefecture = Prefecture.all.randomElement()
+        }
+        
         playSound(named: "start")
         
         // 1秒後に非表示
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            self?.gameState = .waitingForAnswer
+            guard let self = self else { return }
+            // Only transition if game state hasn't changed (e.g. user hasn't quit)
+            if self.gameState == .showing {
+                self.gameState = .waitingForAnswer
+            }
         }
     }
     
@@ -74,6 +83,16 @@ class PrefectureGuessViewModel: ObservableObject {
     
     func playAgain() {
         showAnswerModal = false
+        gameState = .countdown
+        countdownNumber = 3
+        // Clear currentPrefecture to get a new one
+        currentPrefecture = nil
+        startCountdown()
+    }
+    
+    func showPrefectureAgain() {
+        guard currentPrefecture != nil else { return }
+        
         gameState = .countdown
         countdownNumber = 3
         startCountdown()

@@ -70,6 +70,7 @@ class WordFlashViewModel: ObservableObject {
     
     private func timeUp() {
         gameState = .showingAnswer
+        currentChallenge = nil // Hide the challenge immediately so it doesn't show during next game transition
         playSound(named: "timeup")
         showResultModal = true
     }

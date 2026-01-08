@@ -128,7 +128,7 @@ struct GrandparentGuessView: View {
         .animation(.easeInOut, value: viewModel.countdownNumber)
         .navigationTitle("おじいちゃんorおばあちゃん")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $viewModel.showAnswerModal) {
+        .fullScreenCover(isPresented: $viewModel.showAnswerModal) {
             GrandparentAnswerDialog(
                 image: viewModel.currentImage,
                 onContinue: {
@@ -207,6 +207,7 @@ struct GrandparentAnswerDialog: View {
             }
             .navigationTitle("答え")
             .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled()
         }
     }
 }

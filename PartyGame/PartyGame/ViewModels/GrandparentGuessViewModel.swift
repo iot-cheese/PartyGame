@@ -16,6 +16,7 @@ class GrandparentGuessViewModel: ObservableObject {
     @Published var showAnswerModal: Bool = false
     
     private var timer: Timer?
+    private var unusedImages: [GrandparentImage] = []
     
     func startGame() {
         gameState = .countdown
@@ -40,11 +41,22 @@ class GrandparentGuessViewModel: ObservableObject {
     }
     
     private func showRandomImage() {
-        print("🎲 利用可能な画像数: \(GrandparentImage.all.count)")
-        currentImage = GrandparentImage.all.randomElement()
-        print("🖼️ 選択された画像: \(currentImage?.imageName ?? "nil")")
-        gameState = .waitingForAnswer
-        playSound(named: "start")
+        // 未使用画像リストが空なら全画像をシャッフルして補充
+        if unusedImages.isEmpty {
+            print("🔄 画像リストをシャッフルしてリセットします")
+            unusedImages = GrandparentImage.all.shuffled()
+        }
+        
+        // リストから1枚取り出す
+        if !unusedImages.isEmpty {
+            currentImage = unusedImages.removeFirst()
+            print("🖼️ 選択された画像: \(currentImage?.imageName ?? "nil") (残り: \(unusedImages.count)枚)")
+            gameState = .waitingForAnswer
+            playSound(named: "start")
+        } else {
+            // 画像がない場合（通常は起きない）
+            gameState = .ready
+        }
     }
     
     func showAnswer() {

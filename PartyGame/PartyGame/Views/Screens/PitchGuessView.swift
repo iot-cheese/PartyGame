@@ -144,7 +144,7 @@ struct PitchGuessView: View {
         .animation(.easeInOut, value: viewModel.countdownNumber)
         .navigationTitle("音階当て")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $viewModel.showAnswerModal) {
+        .fullScreenCover(isPresented: $viewModel.showAnswerModal) {
             PitchAnswerDialog(
                 note: viewModel.currentNote,
                 onContinue: {
@@ -226,6 +226,7 @@ struct PitchAnswerDialog: View {
             }
             .navigationTitle("答え")
             .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled()
         }
     }
 }

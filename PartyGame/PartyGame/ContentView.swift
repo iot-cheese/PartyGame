@@ -39,6 +39,8 @@ struct ContentView: View {
             PitchGuessView(appViewModel: viewModel)
         case .wordFlash:
             WordFlashView(appViewModel: viewModel)
+        case .tomodachi:
+            TomodachiGameView(appViewModel: viewModel)
         }
     }
 }

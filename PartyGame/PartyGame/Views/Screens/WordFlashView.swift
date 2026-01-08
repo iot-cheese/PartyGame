@@ -107,12 +107,12 @@ struct WordFlashView: View {
                     Spacer()
                 }
                 // チャレンジ表示
-                else if viewModel.gameState == .waitingForAnswer {
+                else if viewModel.gameState == .waitingForAnswer || viewModel.gameState == .showingAnswer {
                     Spacer()
                     
                     if let challenge = viewModel.currentChallenge {
                         VStack(spacing: 40) {
-                            // 残り時間
+                            // 残り時間（円グラフタイマー）
                             ZStack {
                                 Circle()
                                     .stroke(Color.gray.opacity(0.2), lineWidth: 15)
@@ -174,7 +174,7 @@ struct WordFlashView: View {
         .animation(.easeInOut, value: viewModel.countdownNumber)
         .navigationTitle("単語ひらめき")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $viewModel.showResultModal) {
+        .fullScreenCover(isPresented: $viewModel.showResultModal) {
             WordFlashResultDialog(
                 onContinue: {
                     viewModel.playAgain()
@@ -247,6 +247,7 @@ struct WordFlashResultDialog: View {
             }
             .navigationTitle("終了")
             .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled()
         }
     }
 }

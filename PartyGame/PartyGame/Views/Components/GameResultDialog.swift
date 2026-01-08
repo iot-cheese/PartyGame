@@ -11,6 +11,7 @@ struct GameResultDialog: View {
     @Environment(\.dismiss) var dismiss
     let result: GameResult
     let elapsedTime: Double?
+    var customMessage: String? = nil
     let onContinue: () -> Void
     let onBackToSelection: () -> Void
     
@@ -25,7 +26,7 @@ struct GameResultDialog: View {
                     .foregroundColor(result == .success ? .green : .red)
                 
                 // 結果テキスト
-                Text(result.message)
+                Text(customMessage ?? result.message)
                     .font(.largeTitle)
                     .fontWeight(.bold)
                 
@@ -81,6 +82,7 @@ struct GameResultDialog: View {
             }
             .navigationTitle("結果")
             .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled()
         }
     }
 }

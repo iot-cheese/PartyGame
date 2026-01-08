@@ -108,16 +108,37 @@ struct PrefectureGuessView: View {
                         .font(.title)
                         .fontWeight(.bold)
                     
-                    Button {
-                        viewModel.showAnswer()
-                    } label: {
-                        Text("答えを見る")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .frame(width: 200, height: 60)
-                            .background(Color.blue)
-                            .cornerRadius(30)
+                    VStack(spacing: 20) {
+                        Button {
+                            viewModel.showPrefectureAgain()
+                        } label: {
+                            HStack {
+                                Image(systemName: "arrow.clockwise")
+                                Text("もう一度見る")
+                            }
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.green)
+                            .frame(width: 200, height: 50)
+                            .background(Color.green.opacity(0.1))
+                            .cornerRadius(25)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 25)
+                                    .stroke(Color.green, lineWidth: 2)
+                            )
+                        }
+                        
+                        Button {
+                            viewModel.showAnswer()
+                        } label: {
+                            Text("答えを見る")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .frame(width: 200, height: 60)
+                                .background(Color.blue)
+                                .cornerRadius(30)
+                        }
                     }
                     
                     Spacer()
@@ -129,7 +150,7 @@ struct PrefectureGuessView: View {
         .animation(.easeInOut, value: viewModel.countdownNumber)
         .navigationTitle("都道府県当て")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $viewModel.showAnswerModal) {
+        .fullScreenCover(isPresented: $viewModel.showAnswerModal) {
             PrefectureAnswerDialog(
                 prefecture: viewModel.currentPrefecture,
                 onContinue: {
@@ -207,6 +228,7 @@ struct PrefectureAnswerDialog: View {
             }
             .navigationTitle("答え")
             .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled()
         }
     }
 }

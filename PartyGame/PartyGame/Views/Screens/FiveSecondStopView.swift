@@ -121,7 +121,7 @@ struct FiveSecondStopView: View {
         .animation(.easeInOut(duration: 0.2), value: viewModel.shouldHideTimer)
         .navigationTitle("5秒ストップ")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $viewModel.showResultDialog) {
+        .fullScreenCover(isPresented: $viewModel.showResultDialog) {
             GameResultDialog(
                 result: viewModel.gameResult ?? .failure,
                 elapsedTime: viewModel.elapsedTime,
