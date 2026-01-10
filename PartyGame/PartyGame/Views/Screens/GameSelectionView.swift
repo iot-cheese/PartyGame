@@ -10,10 +10,15 @@ import SwiftUI
 struct GameSelectionView: View {
     @ObservedObject var viewModel: AppViewModel
     
+    let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+    
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 20) {
+                LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(GameType.allCases) { game in
                         GameThumbnailView(game: game)
                             .onTapGesture {

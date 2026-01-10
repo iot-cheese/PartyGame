@@ -41,6 +41,8 @@ struct ContentView: View {
             WordFlashView(appViewModel: viewModel)
         case .tomodachi:
             TomodachiGameView(appViewModel: viewModel)
+        case .samekunCount:
+            SamekunCountView(appViewModel: viewModel)
         }
     }
 }

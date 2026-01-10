@@ -14,6 +14,7 @@ enum GameType: String, CaseIterable, Identifiable {
     case pitchGuess = "音階当て"
     case wordFlash = "単語ひらめき"
     case tomodachi = "ともだち"
+    case samekunCount = "サメくんを数えろ"
     
     var id: String { self.rawValue }
     
@@ -31,6 +32,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "ひらめけ！制限時間内に単語を答えよう！"
         case .tomodachi:
             return "宇宙人と心を通わせるんだ！"
+        case .samekunCount:
+            return "通り過ぎるサメくんの数を数えよう！"
         }
     }
     
@@ -48,6 +51,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "character.bubble"
         case .tomodachi:
             return "hand.point.up.fill"
+        case .samekunCount:
+            return "fish"
         }
     }
 }

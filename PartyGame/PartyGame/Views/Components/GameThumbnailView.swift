@@ -13,9 +13,9 @@ struct GameThumbnailView: View {
     var body: some View {
         VStack(spacing: 15) {
             Image(systemName: game.thumbnailName)
-                .font(.system(size: 60))
+                .font(.system(size: 45))
                 .foregroundColor(.white)
-                .frame(width: 120, height: 120)
+                .frame(width: 100, height: 100)
                 .background(
                     LinearGradient(
                         gradient: Gradient(colors: [.blue, .purple]),
@@ -27,15 +27,16 @@ struct GameThumbnailView: View {
                 .shadow(radius: 5)
             
             Text(game.rawValue)
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.bold)
             
             Text(game.description)
-                .font(.subheadline)
+                .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .frame(width: 300)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .frame(maxWidth: .infinity)
         .padding()
         .background(Color.gray.opacity(0.1))
         .cornerRadius(15)
