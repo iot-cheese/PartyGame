@@ -44,6 +44,10 @@ struct SamekunCountView: View {
                 }
             ).interactiveDismissDisabled()
         }
+        .onAppear {
+            // この画面は強制的にPortaitで固定し、手動で90度回転させて表示する
+            AppDelegate.orientationLock = .portrait
+        }
     }
     
     // MARK: - Subviews

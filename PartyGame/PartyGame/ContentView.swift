@@ -43,6 +43,8 @@ struct ContentView: View {
             TomodachiGameView(appViewModel: viewModel)
         case .samekunCount:
             SamekunCountView(appViewModel: viewModel)
+        case .dragonflyStop:
+            DragonflyStopView(appViewModel: viewModel)
         }
     }
 }
