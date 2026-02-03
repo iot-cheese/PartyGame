@@ -9,13 +9,16 @@ import SwiftUI
 
 struct GameThumbnailView: View {
     let game: GameType
+    let onTap: () -> Void
+    
+    @State private var pressed: Bool = false
     
     var body: some View {
         VStack(spacing: 15) {
-            Image(systemName: game.thumbnailName)
-                .font(.system(size: 45))
-                .foregroundColor(.white)
-                .frame(width: 100, height: 100)
+            Image(game.thumbnailName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 150, height: 150)
                 .background(
                     LinearGradient(
                         gradient: Gradient(colors: [.blue, .purple]),
@@ -25,24 +28,29 @@ struct GameThumbnailView: View {
                 )
                 .cornerRadius(20)
                 .shadow(radius: 5)
-            
-            Text(game.rawValue)
-                .font(.title3)
-                .fontWeight(.bold)
-            
-            Text(game.description)
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+                .scaleEffect(pressed ? 0.9 : 1.0)
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color.gray.opacity(0.1))
         .cornerRadius(15)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            pressed = true
+            withAnimation(.easeInOut(duration: 0.1)) {
+                pressed = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                withAnimation(.easeInOut(duration: 0.1)) {
+                    pressed = false
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    onTap()
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    GameThumbnailView(game: .fiveSecondStop)
+    GameThumbnailView(game: .fiveSecondStop, onTap: {})
 }

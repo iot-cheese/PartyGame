@@ -16,26 +16,42 @@ struct GameSelectionView: View {
     ]
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(GameType.allCases) { game in
-                        GameThumbnailView(game: game)
-                            .onTapGesture {
-                                viewModel.selectGame(game)
+        GeometryReader { geometry in
+            ZStack {
+                NavigationView {
+                    ScrollView {
+                        VStack {
+                            Text("ゲーム選択")
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .padding(.top, 50)
+                                .padding(.bottom, -20)
+                            LazyVGrid(columns: columns, spacing: 16) {
+                                ForEach(GameType.allCases) { game in
+                                    GameThumbnailView(game: game, onTap: {
+                                        viewModel.selectGame(game)
+                                    })
+                                }
                             }
+                            .padding()
+                        }
                     }
+                    .background(
+                        Image("game_selection_background")
+                            .resizable()
+                            .scaledToFill()
+                            .edgesIgnoringSafeArea(.all)
+                    )
+                    .edgesIgnoringSafeArea(.all)
                 }
-                .padding()
-            }
-            .navigationTitle("ゲーム選択")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        viewModel.showSettings = true
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .font(.title2)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            viewModel.showSettings = true
+                        } label: {
+                            Image(systemName: "gearshape")
+                                .font(.title2)
+                        }
                     }
                 }
             }

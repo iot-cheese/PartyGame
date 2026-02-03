@@ -17,7 +17,7 @@ class AppViewModel: ObservableObject {
     
     init() {
         // アプリ起動時の読み込み処理をシミュレート
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
             self.isLoading = false
         }
     }

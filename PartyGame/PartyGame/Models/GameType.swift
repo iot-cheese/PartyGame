@@ -43,21 +43,21 @@ enum GameType: String, CaseIterable, Identifiable {
     var thumbnailName: String {
         switch self {
         case .fiveSecondStop:
-            return "stopwatch"
+            return "stop_5sec_game_icon"
         case .prefectureGuess:
-            return "map"
+            return "prefectures_game_icon"
         case .grandparentGuess:
-            return "person.2"
+            return "grandpa_or_grandma_game_icon"
         case .pitchGuess:
-            return "music.note"
+            return "scale_guess_game_icon"
         case .wordFlash:
-            return "character.bubble"
+            return "dosukoi_game_icon"
         case .tomodachi:
-            return "hand.point.up.fill"
+            return "tomodachi_game_icon"
         case .samekunCount:
-            return "fish"
+            return "samekun_count_game_icon"
         case .dragonflyStop:
-            return "circles.hexagonpath.fill"
+            return "dragonfly_game_icon"
         }
     }
 }
