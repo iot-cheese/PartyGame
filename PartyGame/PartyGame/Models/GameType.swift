@@ -16,6 +16,7 @@ enum GameType: String, CaseIterable, Identifiable {
     case tomodachi = "ともだち"
     case samekunCount = "サメくんを数えろ"
     case dragonflyStop = "トンボよ止まれ"
+    case wordWolf = "ワードウルフ"
     
     var id: String { self.rawValue }
     
@@ -37,6 +38,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "通り過ぎるサメくんの数を数えよう！"
         case .dragonflyStop:
             return "円を描いてトンボを呼び寄せよう！"
+        case .wordWolf:
+            return "会話の中に紛れ込んだ人狼を探せ！"
         }
     }
     
@@ -57,7 +60,9 @@ enum GameType: String, CaseIterable, Identifiable {
         case .samekunCount:
             return "samekun_count_game_icon"
         case .dragonflyStop:
-            return "dragonfly_game_icon"
+            return "dragonfly_game_icon" // 仮のアイコン
+        case .wordWolf:
+            return "word_wolf_game_icon"
         }
     }
 }

@@ -45,6 +45,8 @@ struct ContentView: View {
             SamekunCountView(appViewModel: viewModel)
         case .dragonflyStop:
             DragonflyStopView(appViewModel: viewModel)
+        case .wordWolf:
+            WordWolfView(appViewModel: viewModel)
         }
     }
 }
