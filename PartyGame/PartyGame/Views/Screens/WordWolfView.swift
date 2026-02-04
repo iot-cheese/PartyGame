@@ -337,6 +337,7 @@ struct WordWolfResultView: View {
             
             ScrollView {
                 VStack(spacing: 20) {
+                    
                     // Show Players
                     ForEach(viewModel.players) { player in
                         HStack {
