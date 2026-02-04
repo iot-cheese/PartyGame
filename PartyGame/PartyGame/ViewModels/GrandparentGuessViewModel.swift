@@ -86,6 +86,7 @@ class GrandparentGuessViewModel: ObservableObject {
     
     // MARK: - Sound Effects
     private func playSound(named soundName: String) {
+        guard UserDefaults.standard.bool(forKey: "soundEnabled") else { return }
         switch soundName {
         case "countdown":
             AudioServicesPlaySystemSound(1103) // begin_record.caf

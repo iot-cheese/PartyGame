@@ -19,7 +19,7 @@ struct SettingsView: View {
                         HStack {
                             Image(systemName: settingsManager.soundEnabled ? "speaker.wave.3" : "speaker.slash")
                                 .foregroundColor(settingsManager.soundEnabled ? .blue : .gray)
-                            Text("効果音")
+                            Text("アプリ内サウンド")
                         }
                     }
                 }

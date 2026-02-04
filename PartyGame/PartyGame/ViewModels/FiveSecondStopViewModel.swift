@@ -80,6 +80,9 @@ class FiveSecondStopViewModel: ObservableObject {
     
     // MARK: - Sound Effects
     private func playSound(named soundName: String) {
+        // 設定確認
+        guard UserDefaults.standard.bool(forKey: "soundEnabled") else { return }
+        
         // システムサウンドを使用
         switch soundName {
         case "start":

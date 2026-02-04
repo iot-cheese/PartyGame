@@ -209,6 +209,8 @@ class TomodachiGameViewModel: ObservableObject {
     }
     
     private func speak(_ text: String) {
+        guard UserDefaults.standard.bool(forKey: "soundEnabled") else { return }
+        
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "ja-JP")
         speechSynthesizer.speak(utterance)

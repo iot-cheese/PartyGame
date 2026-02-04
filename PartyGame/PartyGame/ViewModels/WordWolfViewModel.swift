@@ -241,6 +241,7 @@ class WordWolfViewModel: ObservableObject {
     
     // MARK: - Sound Effects
     private func playSound(named soundName: String) {
+        guard UserDefaults.standard.bool(forKey: "soundEnabled") else { return }
         switch soundName {
         case "start":
             AudioServicesPlaySystemSound(1005) // Alarm? Or 1103 (Begin video record)

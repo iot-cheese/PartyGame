@@ -277,6 +277,8 @@ class PenaltyGameViewModel: ObservableObject {
     }
     
     private func playSound(named soundName: String) {
+        guard UserDefaults.standard.bool(forKey: "soundEnabled") else { return }
+        
         // Ensure sounds obey silent mode
         do {
             try AVAudioSession.sharedInstance().setCategory(.soloAmbient, mode: .default)

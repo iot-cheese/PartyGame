@@ -40,9 +40,9 @@ enum GameType: String, CaseIterable, Identifiable {
         case .dragonflyStop:
             return "円を描いてトンボを呼び寄せよう！"
         case .wordWolf:
-            return "会話の中に紛れ込んだ人狼を探せ！"
+            return "みんなとは違うお題が配られているのは誰だ！？"
         case .penaltyGame:
-            return "恐怖の罰ゲームルーレット..."
+            return "ランダムで選ばれた人が罰ゲーム！"
         }
     }
     

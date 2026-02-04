@@ -290,7 +290,6 @@ struct PenaltyResultView: View {
                     Spacer()
                     Button(action: {
                         viewModel.resetGame()
-                        appViewModel.selectedGame = nil
                     }) {
                         Text("ゲームをやめる")
                             .fontWeight(.bold)
