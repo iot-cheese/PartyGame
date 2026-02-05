@@ -72,6 +72,14 @@ struct WordWolfSetupView: View {
             }
             .padding(.horizontal)
             
+            Text("【ルール】\nみんなと違うお題を与えられた人（ワードウルフ）を探し出そう！\n話し合いでお題の違いに気づいても、\n悟られないように注意！")
+                .multilineTextAlignment(.center)
+                .font(.body)
+                .padding()
+                .background(Color.white.opacity(0.5))
+                .cornerRadius(10)
+                .padding(.horizontal)
+            
             Spacer()
             
             // Member Input Button
@@ -337,6 +345,30 @@ struct WordWolfResultView: View {
             
             ScrollView {
                 VStack(spacing: 20) {
+                    // Show Topics
+                    HStack(spacing: 20) {
+                        VStack {
+                            Text("市民のお題")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                            Text(viewModel.currentTopic?.citizen ?? "")
+                                .font(.title)
+                                .fontWeight(.bold)
+                        }
+                        VStack {
+                            Text("人狼のお題")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                            Text(viewModel.currentTopic?.wolf ?? "")
+                                .font(.title)
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(15)
+                    .shadow(radius: 5)
+                    .padding(.horizontal)
                     
                     // Show Players
                     ForEach(viewModel.players) { player in
@@ -345,9 +377,19 @@ struct WordWolfResultView: View {
                                 .font(.title3)
                                 .fontWeight(.bold)
                             Spacer()
-                            Text(player.topic)
-                                .font(.headline)
-                                .foregroundColor(player.isWolf ? .red : .green)
+                            if player.isWolf {
+                                Text("人狼")
+                                    .font(.headline)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(Color.red)
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                            } else {
+                                Text("市民")
+                                    .font(.headline)
+                                    .foregroundColor(.gray)
+                            }
                         }
                         .padding()
                         .background(Color.white)
@@ -361,7 +403,7 @@ struct WordWolfResultView: View {
             
             VStack(spacing: 15) {
                 Button(action: {
-                    viewModel.resetToSetup()
+                    viewModel.playAgain()
                 }) {
                     Text("ゲームを続ける")
                         .fontWeight(.bold)

@@ -30,6 +30,10 @@ class WordWolfViewModel: ObservableObject {
     @Published var timeLimit: Int = 180 // Default 3 minutes
     @Published var wolfCount: Int = 1
     
+    // Member persistence
+    @Published var newMemberName: String = ""
+    private let savedMembersKey = "wordWolfMembers"
+    
     @Published var currentCheckingPlayerIndex: Int = 0
     @Published var remainingTime: Int = 0
     @Published var facilitationText: String = ""
@@ -42,6 +46,13 @@ class WordWolfViewModel: ObservableObject {
     
     // Persist used topics
     private let usedTopicsKey = "wordWolfUsedTopicIndices"
+    
+    init() {
+        if let savedMembers = UserDefaults.standard.stringArray(forKey: savedMembersKey) {
+            // Convert strings back to players, assumption: saved as names
+            self.players = savedMembers.map { WordWolfPlayer(name: $0) }
+        }
+    }
     
     var usedTopicIndices: Set<Int> {
         get {
@@ -59,31 +70,26 @@ class WordWolfViewModel: ObservableObject {
     }
     
     // User Input
-    @Published var newMemberName: String = ""
     
     func addMember() {
         let trimmed = newMemberName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
-        players.append(WordWolfPlayer(name: trimmed))
-        newMemberName = ""
+        if !trimmed.isEmpty {
+            players.append(WordWolfPlayer(name: trimmed))
+            newMemberName = ""
+            saveMembers()
+        }
     }
     
     func removeMember(at offsets: IndexSet) {
         players.remove(atOffsets: offsets)
-        // Adjust wolf count if needed
-        if wolfCount >= players.count && players.count > 0 {
-            wolfCount = max(1, players.count / 2) // Simple logic, can remain larger but usually wolves < citizens
-        } else if players.count == 0 {
-            wolfCount = 1
-        }
+        saveMembers()
     }
     
-    func deleteMember(player: WordWolfPlayer) {
-        if let index = players.firstIndex(of: player) {
-            players.remove(at: index)
-        }
+    func saveMembers() {
+        let names = players.map { $0.name }
+        UserDefaults.standard.set(names, forKey: savedMembersKey)
     }
-    
+
     func prepareGame() {
         guard !players.isEmpty else { return }
         
@@ -241,7 +247,6 @@ class WordWolfViewModel: ObservableObject {
     
     // MARK: - Sound Effects
     private func playSound(named soundName: String) {
-        guard UserDefaults.standard.bool(forKey: "soundEnabled") else { return }
         switch soundName {
         case "start":
             AudioServicesPlaySystemSound(1005) // Alarm? Or 1103 (Begin video record)

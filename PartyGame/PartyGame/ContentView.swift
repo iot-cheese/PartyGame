@@ -49,6 +49,8 @@ struct ContentView: View {
             WordWolfView(appViewModel: viewModel)
         case .penaltyGame:
             PenaltyGameView(appViewModel: viewModel)
+        case .shimoneta:
+            ShimonetaGameView(appViewModel: viewModel)
         }
     }
 }

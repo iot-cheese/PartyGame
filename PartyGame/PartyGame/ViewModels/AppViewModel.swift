@@ -12,6 +12,7 @@ class AppViewModel: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var showSettings: Bool = false
     @Published var selectedGame: GameType? = nil
+    @Published var lastSelectedGameId: String? = nil
     
     let settingsManager = SettingsManager()
     
@@ -24,6 +25,7 @@ class AppViewModel: ObservableObject {
     
     func selectGame(_ game: GameType) {
         selectedGame = game
+        lastSelectedGameId = game.id
     }
     
     func backToGameSelection() {

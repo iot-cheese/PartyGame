@@ -18,6 +18,7 @@ enum GameType: String, CaseIterable, Identifiable {
     case dragonflyStop = "トンボよ止まれ"
     case wordWolf = "ワードウルフ"
     case penaltyGame = "罰ゲーム"
+    case shimoneta = "下ネタを作るな"
     
     var id: String { self.rawValue }
     
@@ -43,6 +44,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "みんなとは違うお題が配られているのは誰だ！？"
         case .penaltyGame:
             return "ランダムで選ばれた人が罰ゲーム！"
+        case .shimoneta:
+            return "禁止文字を回避してターゲットを追い詰めろ！"
         }
     }
     
@@ -68,6 +71,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "word_wolf_game_icon"
         case .penaltyGame:
             return "penalty_game_icon"
+        case .shimoneta:
+            return "shimoneta_game_icon"
         }
     }
 }

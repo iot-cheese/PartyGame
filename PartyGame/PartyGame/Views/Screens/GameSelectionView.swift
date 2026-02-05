@@ -10,7 +10,8 @@ import SwiftUI
 struct GameSelectionView: View {
     @ObservedObject var viewModel: AppViewModel
     
-    private let brainGames: [GameType] = [.samekunCount, .wordFlash, .wordWolf, .prefectureGuess]
+    private let brainGames: [GameType] = [.samekunCount, .wordFlash, .prefectureGuess]
+    private let psychologyGames: [GameType] = [.wordWolf, .shimoneta]
     private let senseGames: [GameType] = [.grandparentGuess, .fiveSecondStop, .tomodachi, .pitchGuess, .dragonflyStop]
     private let luckGames: [GameType] = [.penaltyGame]
     
@@ -22,6 +23,7 @@ struct GameSelectionView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+                ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 30) {
                             // Banner Ad
@@ -76,6 +78,7 @@ struct GameSelectionView: View {
                             
                             gameSection(title: "頭脳系", games: brainGames, geometry: geometry)
                             gameSection(title: "センス系", games: senseGames, geometry: geometry)
+                            gameSection(title: "心理戦", games: psychologyGames, geometry: geometry)
                             gameSection(title: "運ゲー", games: luckGames, geometry: geometry)
                             
                             Spacer().frame(height: 50)
@@ -85,6 +88,15 @@ struct GameSelectionView: View {
                         Color(red: 0.12, green: 0.12, blue: 0.18) // Dark background
                             .edgesIgnoringSafeArea(.all)
                     )
+                    .onAppear {
+                        if let lastId = viewModel.lastSelectedGameId {
+                            // Delay slightly to ensure layout is ready
+                            DispatchQueue.main.async {
+                                proxy.scrollTo(lastId, anchor: .center)
+                            }
+                        }
+                    }
+                }
             }
         }
         .sheet(isPresented: $viewModel.showSettings) {
@@ -99,6 +111,7 @@ struct GameSelectionView: View {
                     GameThumbnailView(game: game, onTap: {
                         viewModel.selectGame(game)
                     })
+                    .id(game.id)
                 }
             }
             .padding()
