@@ -10,6 +10,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var settingsManager: SettingsManager
+    @State private var showingResetAlert = false
     
     var body: some View {
         NavigationView {
@@ -20,6 +21,17 @@ struct SettingsView: View {
                             Image(systemName: settingsManager.soundEnabled ? "speaker.wave.3" : "speaker.slash")
                                 .foregroundColor(settingsManager.soundEnabled ? .blue : .gray)
                             Text("アプリ内サウンド")
+                        }
+                    }
+                }
+                
+                Section(header: Text("データ管理")) {
+                    Button(role: .destructive) {
+                        showingResetAlert = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("保存されたメンバー情報を削除")
                         }
                     }
                 }
@@ -51,6 +63,16 @@ struct SettingsView: View {
                         dismiss()
                     }
                 }
+            }
+            .alert(isPresented: $showingResetAlert) {
+                Alert(
+                    title: Text("確認"),
+                    message: Text("すべてのゲームの保存されたメンバー情報を削除しますか？\nこの操作は取り消せません。"),
+                    primaryButton: .destructive(Text("削除")) {
+                        settingsManager.resetAllGameData()
+                    },
+                    secondaryButton: .cancel()
+                )
             }
         }
     }

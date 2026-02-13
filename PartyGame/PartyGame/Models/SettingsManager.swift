@@ -23,4 +23,17 @@ class SettingsManager: ObservableObject {
             UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
         }
     }
+    
+    func resetAllGameData() {
+        let keysToRemove = [
+            "shimonetaMembers",
+            "wordWolfMembers",
+            "penaltyGamePlayers",
+            "wordWolfUsedTopicIndices"
+        ]
+        
+        for key in keysToRemove {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
 }
