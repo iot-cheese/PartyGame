@@ -37,6 +37,10 @@ class PenaltyGameViewModel: ObservableObject {
     @Published var consecutiveSafeCount: Int = 0
     @Published var isFlashing: Bool = false
     
+    // Auto Advance Logic
+    @Published var isAutoAdvanceWarning: Bool = false
+    private var autoAdvanceTimer: Timer?
+    
     // Item Logic
     @Published var gainedItemStrength: Int? = nil
     @Published var showItemSelector: Bool = false
@@ -123,9 +127,12 @@ class PenaltyGameViewModel: ObservableObject {
                 // Flash effect
                 self.triggerFlashEffect {
                     self.showResult(withSound: "thunder")
+                    self.startAutoAdvanceTimer()
                 }
             } else {
-                self.showResult(withSound: self.isSafe ? "safe" : "out")
+                let sound = self.isSafe ? "safe" : "out"
+                self.showResult(withSound: sound)
+                self.startAutoAdvanceTimer()
             }
         }
     }
@@ -157,7 +164,39 @@ class PenaltyGameViewModel: ObservableObject {
         self.playSound(named: sound)
     }
     
+    func startAutoAdvanceTimer() {
+        stopAutoAdvanceTimer()
+        isAutoAdvanceWarning = false
+        
+        // Timer for 8 seconds total
+        // At 5 seconds (3 seconds remaining), trigger warning
+        
+        let startTime = Date()
+        
+        autoAdvanceTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
+            guard let self = self else { return }
+            let elapsed = Date().timeIntervalSince(startTime)
+            
+            if elapsed >= 5.0 && !self.isAutoAdvanceWarning {
+                self.isAutoAdvanceWarning = true
+            }
+            
+            if elapsed >= 8.0 {
+                self.stopAutoAdvanceTimer()
+                self.checkNextTurn()
+            }
+        }
+    }
+    
+    func stopAutoAdvanceTimer() {
+        autoAdvanceTimer?.invalidate()
+        autoAdvanceTimer = nil
+        isAutoAdvanceWarning = false
+    }
+    
     func checkNextTurn() {
+        stopAutoAdvanceTimer()
+        
         let currentPlayer = players[currentPlayerIndex]
         let exactMemberOut = penaltyText == "\(currentPlayer.name) アウト"
 
@@ -203,6 +242,7 @@ class PenaltyGameViewModel: ObservableObject {
     }
     
     func resetGame() {
+        stopAutoAdvanceTimer()
         gameState = .setup
         penaltyText = ""
         consecutiveSafeCount = 0

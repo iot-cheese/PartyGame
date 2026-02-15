@@ -335,9 +335,17 @@ struct PenaltyResultView: View {
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white)
+                        .background(viewModel.isAutoAdvanceWarning ? Color(white: 0.8) : Color.white)
                         .foregroundColor(.black)
                         .cornerRadius(12)
+                        .scaleEffect(viewModel.isAutoAdvanceWarning ? 0.95 : 1.0)
+                        .opacity(viewModel.isAutoAdvanceWarning ? 0.7 : 1.0)
+                        .animation(
+                            viewModel.isAutoAdvanceWarning
+                                ? Animation.easeInOut(duration: 0.3).repeatForever(autoreverses: true)
+                                : .default,
+                            value: viewModel.isAutoAdvanceWarning
+                        )
                 }
                 .padding(.horizontal, 40)
                 .padding(.bottom, 50)
