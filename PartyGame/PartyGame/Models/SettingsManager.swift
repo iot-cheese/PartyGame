@@ -30,7 +30,12 @@ class SettingsManager: ObservableObject {
             "wordWolfMembers",
             "penaltyGamePlayers",
             "wordWolfUsedTopicIndices",
-            "drawingShiritoriMembers"
+            "drawingShiritoriMembers",
+            "senseGameMembers",
+            "senseGameMembers2",
+            "senseGameMembers3",
+            "senseGameMembers4",
+            "senseGamePlayerCount"
         ]
         
         for key in keysToRemove {

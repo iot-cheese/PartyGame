@@ -11,8 +11,8 @@ struct GameSelectionView: View {
     @ObservedObject var viewModel: AppViewModel
     
     private let brainGames: [GameType] = [.samekunCount, .wordFlash, .prefectureGuess, .pitchGuess]
-    private let psychologyGames: [GameType] = [.wordWolf, .shimoneta, .drawingShiritori]
-    private let senseGames: [GameType] = [.grandparentGuess, .fiveSecondStop, .tomodachi, .dragonflyStop]
+    private let psychologyGames: [GameType] = [.wordWolf, .shimoneta]
+    private let senseGames: [GameType] = [.grandparentGuess, .fiveSecondStop, .tomodachi, .dragonflyStop, .drawingShiritori, .senseGame]
     private let luckGames: [GameType] = [.penaltyGame]
     
     let columns = [
