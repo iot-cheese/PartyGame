@@ -10,9 +10,9 @@ import SwiftUI
 struct GameSelectionView: View {
     @ObservedObject var viewModel: AppViewModel
     
-    private let brainGames: [GameType] = [.samekunCount, .wordFlash, .prefectureGuess]
+    private let brainGames: [GameType] = [.samekunCount, .wordFlash, .prefectureGuess, .pitchGuess]
     private let psychologyGames: [GameType] = [.wordWolf, .shimoneta]
-    private let senseGames: [GameType] = [.grandparentGuess, .fiveSecondStop, .tomodachi, .pitchGuess, .dragonflyStop]
+    private let senseGames: [GameType] = [.grandparentGuess, .fiveSecondStop, .tomodachi, .dragonflyStop]
     private let luckGames: [GameType] = [.penaltyGame]
     
     let columns = [
