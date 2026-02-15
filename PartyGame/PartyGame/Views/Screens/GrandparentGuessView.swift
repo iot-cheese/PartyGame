@@ -98,7 +98,7 @@ struct GrandparentGuessView: View {
                             Image(image.imageName)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 300, height: 300)
+                                .frame(maxWidth: 400, maxHeight: 400)
                                 .cornerRadius(20)
                             
                             Button {
@@ -166,7 +166,7 @@ struct GrandparentAnswerDialog: View {
                     Image(image.imageName)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 250, height: 250)
+                        .frame(maxWidth: 350, maxHeight: 350)
                         .cornerRadius(20)
                 }
                 

@@ -51,6 +51,8 @@ struct ContentView: View {
             PenaltyGameView(appViewModel: viewModel)
         case .shimoneta:
             ShimonetaGameView(appViewModel: viewModel)
+        case .drawingShiritori:
+            DrawingShiritoriView(appViewModel: viewModel)
         }
     }
 }

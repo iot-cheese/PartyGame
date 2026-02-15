@@ -19,6 +19,7 @@ enum GameType: String, CaseIterable, Identifiable {
     case wordWolf = "ワードウルフ"
     case penaltyGame = "罰ゲーム"
     case shimoneta = "下ネタを作るな"
+    case drawingShiritori = "お絵描きしりとり"
     
     var id: String { self.rawValue }
     
@@ -46,6 +47,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "ランダムで選ばれた人が罰ゲーム！"
         case .shimoneta:
             return "禁止文字を回避してターゲットを追い詰めろ！"
+        case .drawingShiritori:
+            return "お絵描きでしりとりを繋げよう！"
         }
     }
     
@@ -73,6 +76,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "penalty_game_icon"
         case .shimoneta:
             return "shimoneta_game_icon"
+        case .drawingShiritori:
+            return "drawing_shiritori_game_icon"
         }
     }
 }

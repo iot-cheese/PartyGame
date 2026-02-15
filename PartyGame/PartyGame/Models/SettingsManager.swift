@@ -29,7 +29,8 @@ class SettingsManager: ObservableObject {
             "shimonetaMembers",
             "wordWolfMembers",
             "penaltyGamePlayers",
-            "wordWolfUsedTopicIndices"
+            "wordWolfUsedTopicIndices",
+            "drawingShiritoriMembers"
         ]
         
         for key in keysToRemove {
