@@ -55,6 +55,8 @@ struct ContentView: View {
             DrawingShiritoriView(appViewModel: viewModel)
         case .senseGame:
             SenseGameView(appViewModel: viewModel)
+        case .secretQuestion:
+            SecretQuestionView(appViewModel: viewModel)
         }
     }
 }

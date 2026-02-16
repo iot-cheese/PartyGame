@@ -38,7 +38,7 @@ struct SettingsView: View {
                 
                 Section(header: Text("情報")) {
                     Button {
-                        if let url = URL(string: "https://example.com/privacy-policy") {
+                        if let url = URL(string: "https://sato-monaka.github.io/PartyGame/PrivacyPolicy.html") {
                             // 実際にはSafariViewControllerなどで開く
                             #if os(iOS)
                             UIApplication.shared.open(url)

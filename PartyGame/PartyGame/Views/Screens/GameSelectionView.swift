@@ -61,6 +61,30 @@ struct GameSelectionView: View {
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
                                 Spacer()
+                                
+                                // Notification Button
+                                Button {
+                                    viewModel.showNotifications = true
+                                } label: {
+                                    ZStack(alignment: .topTrailing) {
+                                        Image(systemName: "bell.fill")
+                                            .font(.title2)
+                                            .foregroundColor(.white)
+                                            .padding(8)
+                                            .background(Color.white.opacity(0.2))
+                                            .clipShape(Circle())
+                                        
+                                        if viewModel.notificationManager.unreadCount > 0 {
+                                            Circle()
+                                                .fill(Color.red)
+                                                .frame(width: 12, height: 12)
+                                                .offset(x: 2, y: -2)
+                                        }
+                                    }
+                                }
+                                .padding(.trailing, 8)
+                                
+                                // Settings Button
                                 Button {
                                     viewModel.showSettings = true
                                 } label: {
@@ -81,6 +105,39 @@ struct GameSelectionView: View {
                             gameSection(title: "心理戦", games: psychologyGames, geometry: geometry)
                             gameSection(title: "運ゲー", games: luckGames, geometry: geometry)
                             
+                            // Secret Question Section
+                            Button(action: {
+                                viewModel.selectGame(.secretQuestion)
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .fill(LinearGradient(gradient: Gradient(colors: [Color(red: 0.2, green: 0.8, blue: 0.9), Color(red: 0.1, green: 0.5, blue: 0.8)]), startPoint: .topLeading, endPoint: .bottomTrailing))
+                                        .frame(width: geometry.size.width * 0.5, height: geometry.size.width * 0.5)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(Color.white.opacity(0.5), lineWidth: 4)
+                                        )
+                                        .shadow(color: Color(red: 0.1, green: 0.5, blue: 0.8).opacity(0.5), radius: 10, x: 0, y: 5)
+                                    
+                                    VStack(spacing: 8) {
+                                        Image(systemName: "bonjour")
+                                            .font(.system(size: 40))
+                                            .foregroundColor(.white)
+                                        
+                                        Text("秘密の質問")
+                                            .font(.title3)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.white)
+                                        
+                                        Text("みんなの本音")
+                                            .font(.caption)
+                                            .foregroundColor(.white.opacity(0.9))
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 20)
+                            .id(GameType.secretQuestion.id)
+                            
                             Spacer().frame(height: 50)
                         }
                     }
@@ -95,12 +152,17 @@ struct GameSelectionView: View {
                                 proxy.scrollTo(lastId, anchor: .center)
                             }
                         }
+                        // Fetch notifications when view appears
+                        viewModel.notificationManager.fetchNotifications()
                     }
                 }
             }
         }
         .sheet(isPresented: $viewModel.showSettings) {
             SettingsView(settingsManager: viewModel.settingsManager)
+        }
+        .sheet(isPresented: $viewModel.showNotifications) {
+             NotificationListView(notificationManager: viewModel.notificationManager)
         }
     }
     

@@ -21,6 +21,7 @@ enum GameType: String, CaseIterable, Identifiable {
     case shimoneta = "下ネタを作るな"
     case drawingShiritori = "お絵描きしりとり"
     case senseGame = "感覚ゲーム"
+    case secretQuestion = "秘密の質問"
     
     var id: String { self.rawValue }
     
@@ -52,6 +53,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "お絵描きでしりとりを繋げよう！"
         case .senseGame:
             return "面積、色、文字...瞬時に判断せよ！"
+        case .secretQuestion:
+            return "みんなに質問して匿名で回答を集めよう！"
         }
     }
     
@@ -83,6 +86,8 @@ enum GameType: String, CaseIterable, Identifiable {
             return "drawing_shiritori_game_icon"
         case .senseGame:
             return "sense_game_icon"
+        case .secretQuestion:
+            return "secret_question_game_icon" // Placeholder
         }
     }
 }
