@@ -106,8 +106,6 @@ class SamekunCountViewModel: ObservableObject {
         // 3. Determine Up Count (0 to 6)
         let upCount = Int.random(in: 2...6)
         
-        print("🦈 Settings: Correct=\(correctCount), Dummy=\(dummyCount), Up=\(upCount)")
-        
         // Add Correct Sharks (No Up, No Dummy)
         for _ in 0..<correctCount {
             sharkQueue.append(SharkInstance(duration: randomDuration(), shouldGoUp: false, isDummy: false))

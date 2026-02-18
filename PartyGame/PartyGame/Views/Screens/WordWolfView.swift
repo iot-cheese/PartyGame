@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct WordWolfView: View {
-    @ObservedObject var appViewModel: AppViewModel
     @StateObject private var viewModel = WordWolfViewModel()
     @State private var showingMemberInput = false
+    @ObservedObject var appViewModel: AppViewModel
     
     var body: some View {
         ZStack {
@@ -34,13 +34,7 @@ struct WordWolfView: View {
             }
         }
         .sheet(isPresented: $showingMemberInput) {
-            WordWolfMemberInputView(viewModel: viewModel)
-        }
-        .fullScreenCover(isPresented: Binding(
-            get: { viewModel.gameState == .result },
-            set: { _ in }
-        )) {
-            WordWolfResultView(viewModel: viewModel, appViewModel: appViewModel)
+            WordWolfMemberInputView(viewModel: viewModel, settingsManager: appViewModel.settingsManager)
         }
     }
 }
@@ -131,6 +125,13 @@ struct WordWolfSetupView: View {
             
             // Start Button
             Button(action: {
+                // 履歴に保存
+                let memberNames = viewModel.players.map { $0.name }
+                appViewModel.settingsManager.saveMemberHistory(gameId: SettingsManager.sharedMemberHistoryId, members: memberNames)
+                
+                // プレイ回数をインクリメント
+                appViewModel.settingsManager.incrementPlayCount(for: GameType.wordWolf.id)
+                
                 viewModel.prepareGame()
             }) {
                 Text("スタート")
@@ -152,7 +153,9 @@ struct WordWolfSetupView: View {
 // MARK: - Member Input View
 struct WordWolfMemberInputView: View {
     @ObservedObject var viewModel: WordWolfViewModel
+    @ObservedObject var settingsManager: SettingsManager
     @Environment(\.presentationMode) var presentationMode
+    @State private var showingHistory = false
     
     var body: some View {
         NavigationView {
@@ -191,9 +194,27 @@ struct WordWolfMemberInputView: View {
                 .padding(.bottom) // Adjust for keyboard?
             }
             .navigationTitle("メンバー入力")
-            .navigationBarItems(trailing: Button("完了") {
-                presentationMode.wrappedValue.dismiss()
-            })
+            .navigationBarItems(
+                leading: Button(action: {
+                    showingHistory = true
+                }) {
+                    Image(systemName: "clock.arrow.circlepath")
+                    Text("履歴")
+                },
+                trailing: Button("完了") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            )
+            .sheet(isPresented: $showingHistory) {
+                MemberHistoryView(settingsManager: settingsManager, gameId: SettingsManager.sharedMemberHistoryId) { selectedMembers in
+                    // 既存メンバーをクリアして履歴から反映
+                    viewModel.clearAllMembers()
+                    for name in selectedMembers {
+                        viewModel.newMemberName = name
+                        viewModel.addMember()
+                    }
+                }
+            }
         }
     }
 }
@@ -403,6 +424,9 @@ struct WordWolfResultView: View {
             
             VStack(spacing: 15) {
                 Button(action: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.wordWolf.id)
+                    
                     viewModel.playAgain()
                 }) {
                     Text("ゲームを続ける")

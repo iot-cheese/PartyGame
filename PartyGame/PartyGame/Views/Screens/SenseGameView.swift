@@ -98,6 +98,9 @@ struct SenseGameSetupView: View {
                     
                     // Start Button
                     Button(action: {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.senseGame.id)
+                        
                         viewModel.startGame()
                     }) {
                         Text("スタート")
@@ -454,6 +457,9 @@ struct SenseGameOverView: View {
             
             HStack(spacing: 20) {
                 Button(action: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.senseGame.id)
+                    
                     viewModel.resetGame()
                 }) {
                     Text("ゲームを続ける")

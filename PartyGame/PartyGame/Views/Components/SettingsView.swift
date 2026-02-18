@@ -38,6 +38,22 @@ struct SettingsView: View {
                 
                 Section(header: Text("情報")) {
                     Button {
+                        if let url = URL(string: "https://sato-monaka.github.io/PartyGame/TermsAndConditions.html") {
+                            #if os(iOS)
+                            UIApplication.shared.open(url)
+                            #endif
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "doc.text")
+                            Text("利用規約")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                    Button {
                         if let url = URL(string: "https://sato-monaka.github.io/PartyGame/PrivacyPolicy.html") {
                             // 実際にはSafariViewControllerなどで開く
                             #if os(iOS)
@@ -52,6 +68,14 @@ struct SettingsView: View {
                             Image(systemName: "chevron.right")
                                 .foregroundColor(.gray)
                         }
+                    }
+                    
+                    HStack {
+                        Spacer()
+                        Text("バージョン 1.0.0")
+                            .font(.footnote)
+                            .foregroundColor(.gray)
+                        Spacer()
                     }
                 }
             }

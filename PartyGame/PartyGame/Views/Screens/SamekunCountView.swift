@@ -37,6 +37,8 @@ struct SamekunCountView: View {
             SamekunResultDialog(
                 count: viewModel.totalSharkCount,
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.samekunCount.id)
                     viewModel.resetGame()
                 },
                 onBackToSelection: {
@@ -92,6 +94,9 @@ struct SamekunCountView: View {
                         .minimumScaleFactor(0.5)
                     
                     Button {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.samekunCount.id)
+                        
                         viewModel.startGame()
                     } label: {
                         Text("スタート")

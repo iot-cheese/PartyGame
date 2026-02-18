@@ -45,7 +45,7 @@ struct ShimonetaGameView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("下ネタを作るな")
         .sheet(isPresented: $showingMemberInput) {
-            ShimonetaMemberInputView(viewModel: viewModel, isPresented: $showingMemberInput)
+            ShimonetaMemberInputView(viewModel: viewModel, settingsManager: appViewModel.settingsManager, isPresented: $showingMemberInput)
         }
     }
     
@@ -151,6 +151,12 @@ struct ShimonetaGameView: View {
             
             Button(action: {
                 if viewModel.members.count >= 2 {
+                    // 履歴保存
+                    appViewModel.settingsManager.saveMemberHistory(gameId: SettingsManager.sharedMemberHistoryId, members: viewModel.members)
+                    
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.shimoneta.id)
+                    
                     viewModel.startGame()
                 }
             }) {
@@ -280,9 +286,11 @@ struct ShimonetaGameView: View {
 
 struct ShimonetaMemberInputView: View {
     @ObservedObject var viewModel: ShimonetaViewModel
+    @ObservedObject var settingsManager: SettingsManager
     @Binding var isPresented: Bool
     @State private var newName: String = ""
     @FocusState private var isFocused: Bool
+    @State private var showingHistory = false
     
     var body: some View {
         NavigationView {
@@ -317,9 +325,22 @@ struct ShimonetaMemberInputView: View {
                 .padding()
             }
             .navigationTitle("メンバー入力")
-            .navigationBarItems(trailing: Button("完了") {
-                isPresented = false
-            })
+            .navigationBarItems(
+                leading: Button(action: {
+                    showingHistory = true
+                }) {
+                    Image(systemName: "clock.arrow.circlepath")
+                    Text("履歴")
+                },
+                trailing: Button("完了") {
+                    isPresented = false
+                }
+            )
+            .sheet(isPresented: $showingHistory) {
+                 MemberHistoryView(settingsManager: settingsManager, gameId: SettingsManager.sharedMemberHistoryId) { selectedMembers in
+                     viewModel.members = selectedMembers
+                 }
+            }
         }
     }
     
@@ -409,7 +430,7 @@ struct ShimonetaResultView: View {
                              // Names inside
                              VStack {
                                  Spacer()
-                                 Text(viewModel.activeMembers.filter{$0 != "CPU"}.joined(separator: "\n"))
+                                 Text(viewModel.getActualActiveMembers().filter{$0 != "CPU"}.joined(separator: "\n"))
                                      .font(.title)
                                      .fontWeight(.bold)
                                      .foregroundColor(.white)
@@ -423,39 +444,42 @@ struct ShimonetaResultView: View {
 
                     } else {
                         // Not Forbidden -> Target OUT
-                        ZStack(alignment: .top) {
-                             // Background box
-                             RoundedRectangle(cornerRadius: 16)
-                                 .stroke(Color.red, lineWidth: 4)
-                                 .background(Color.black.opacity(0.3).cornerRadius(16))
-                                 .frame(maxWidth: .infinity)
-                                 .frame(height: 150)
-                             
-                             // OUT label on top edge
-                             Text("失格")
-                                 .font(.title)
-                                 .fontWeight(.heavy)
-                                 .foregroundColor(.white)
-                                 .padding(.horizontal, 20)
-                                 .padding(.vertical, 5)
-                                 .background(Color.red)
-                                 .cornerRadius(8)
-                                 .offset(y: -20)
+                        // 二人プレイ時のお客さんは表示しない場合がある
+                        if viewModel.shouldShowTargetMembersInResult() {
+                            ZStack(alignment: .top) {
+                                 // Background box
+                                 RoundedRectangle(cornerRadius: 16)
+                                     .stroke(Color.red, lineWidth: 4)
+                                     .background(Color.black.opacity(0.3).cornerRadius(16))
+                                     .frame(maxWidth: .infinity)
+                                     .frame(height: 150)
                                  
-                             // Names inside
-                             VStack {
-                                 Spacer()
-                                 Text(viewModel.targetMembers.joined(separator: "\n"))
+                                 // OUT label on top edge
+                                 Text("失格")
                                      .font(.title)
-                                     .fontWeight(.bold)
+                                     .fontWeight(.heavy)
                                      .foregroundColor(.white)
-                                     .multilineTextAlignment(.center)
-                                 Spacer()
-                             }
-                             .frame(height: 150)
+                                     .padding(.horizontal, 20)
+                                     .padding(.vertical, 5)
+                                     .background(Color.red)
+                                     .cornerRadius(8)
+                                     .offset(y: -20)
+                                 
+                                 // Names inside
+                                 VStack {
+                                     Spacer()
+                                     Text(viewModel.targetMembers.joined(separator: "\n"))
+                                         .font(.title)
+                                         .fontWeight(.bold)
+                                         .foregroundColor(.white)
+                                         .multilineTextAlignment(.center)
+                                     Spacer()
+                                 }
+                                 .frame(height: 150)
+                            }
+                            .padding(.horizontal, 40)
+                            .padding(.top, 20)
                         }
-                        .padding(.horizontal, 40)
-                        .padding(.top, 20)
                     }
                 }
                 .transition(.opacity)
@@ -463,6 +487,9 @@ struct ShimonetaResultView: View {
                 
                 HStack(spacing: 20) {
                     Button(action: {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.shimoneta.id)
+                        
                         viewModel.startGame()
                         resetState()
                     }) {
@@ -597,9 +624,6 @@ struct ShimonetaResultView: View {
     }
     
     func char(at index: Int) -> String {
-        if index < viewModel.selectedChars.count {
-            return viewModel.selectedChars[index]
-        }
-        return "?"
+        return viewModel.displayChar(at: index)
     }
 }

@@ -90,6 +90,9 @@ struct FiveSecondStopView: View {
                 // ボタン
                 if !viewModel.isRunning && viewModel.gameResult == nil {
                     Button {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.fiveSecondStop.id)
+                        
                         viewModel.startTimer()
                     } label: {
                         Text("スタート")
@@ -126,6 +129,8 @@ struct FiveSecondStopView: View {
                 result: viewModel.gameResult ?? .failure,
                 elapsedTime: viewModel.elapsedTime,
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.fiveSecondStop.id)
                     viewModel.reset()
                 },
                 onBackToSelection: {

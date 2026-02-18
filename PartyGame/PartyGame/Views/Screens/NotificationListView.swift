@@ -45,9 +45,7 @@ struct NotificationListView: View {
             .navigationBarItems(trailing: Button(action: {
                 presentationMode.wrappedValue.dismiss()
             }) {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(.gray)
-                    .font(.title2)
+                Text("閉じる")
             })
             .onAppear {
                 // Fetch latest notifications just in case

@@ -21,7 +21,8 @@ class ShimonetaViewModel: ObservableObject {
     @Published var displayedChars: [String] = ["?", "?", "?"]
     @Published var isResultRevealed: Bool = false
     
-    let forbiddenWords = ["ちんこ", "ちんぽ", "ちんげ", "あなる", "うんこ", "まんぽ", "まんげ", "ペニス", "おなら", "にょう", "うんち", "きのこ", "あわび", "ぼっき"]
+    let forbiddenWords = ["ちんこ", "ちんぽ", "ちんげ", "あなる", "うんこ", "まんげ", "ペニス", "おなら", "にょう", "うんち", "あわび", "ぼっき", "バナナ"]
+    let hiddenWords = ["ちんこ", "ちんぽ", "ちんげ", "あなる", "まんげ", "ペニス", "ぼっき"]
     let unavailableWords = ["まんこ"]
     private let savedMembersKey = "shimonetaMembers"
     
@@ -221,6 +222,39 @@ class ShimonetaViewModel: ObservableObject {
             return .forbiddenMatch // Active Members OUT
         } else {
             return .forbiddenMismatch // Target OUT
+        }
+    }
+    
+    func shouldHideMiddleChar() -> Bool {
+        let finalWord = selectedChars.joined()
+        return hiddenWords.contains(finalWord)
+    }
+    
+    func displayChar(at index: Int) -> String {
+        guard index < selectedChars.count else { return "?" }
+        
+        // If the word is a hidden word and this is the middle character (index 1), show ◯
+        if shouldHideMiddleChar() && index == 1 {
+            return "◯"
+        }
+        
+        return selectedChars[index]
+    }
+    
+    func shouldShowTargetMembersInResult() -> Bool {
+        // 二人プレイ時、挑戦者がOUTの場合（forbiddenMatch）はお客さんを表示しない
+        if members.count == 2 {
+            let outcome = getOutcome()
+            return outcome != .forbiddenMatch
+        }
+        // 二人プレイ以外は常に表示
+        return true
+    }
+    
+    func getActualActiveMembers() -> [String] {
+        // お客さん（targetMembers）を除いた、実際の挑戦者のみを返す
+        return activeMembers.filter { member in
+            member == "CPU" || !targetMembers.contains(member)
         }
     }
     

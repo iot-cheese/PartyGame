@@ -60,6 +60,9 @@ struct GrandparentGuessView: View {
                     Spacer()
                     
                     Button {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.grandparentGuess.id)
+                        
                         viewModel.startGame()
                     } label: {
                         Text("スタート")
@@ -132,6 +135,8 @@ struct GrandparentGuessView: View {
             GrandparentAnswerDialog(
                 image: viewModel.currentImage,
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.grandparentGuess.id)
                     viewModel.playAgain()
                 },
                 onBackToSelection: {

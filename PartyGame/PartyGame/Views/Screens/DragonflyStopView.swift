@@ -47,7 +47,6 @@ struct DragonflyStopView: View {
                 
                 if !viewModel.isPlaying && viewModel.gameResult == nil && !viewModel.showSuccessAnimation {
                     // Start Screen Content
-                    Spacer()
                     
                     VStack(spacing: 30) {
                         Text("トンボよ止まれ")
@@ -64,6 +63,9 @@ struct DragonflyStopView: View {
                             .clipShape(Circle())
                         
                         Button {
+                            // プレイ回数をインクリメント
+                            appViewModel.settingsManager.incrementPlayCount(for: GameType.dragonflyStop.id)
+                            
                             viewModel.startGame()
                         } label: {
                             Text("スタート")
@@ -187,6 +189,8 @@ struct DragonflyStopView: View {
                 elapsedTime: nil,
                 customMessage: viewModel.gameResult == .success ? "トンボが止まった！" : "逃げちゃった...",
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.dragonflyStop.id)
                     viewModel.reset()
                 },
                 onBackToSelection: {

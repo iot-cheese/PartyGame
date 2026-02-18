@@ -89,6 +89,9 @@ struct TomodachiGameView: View {
                             .padding(.horizontal)
                             
                         Button {
+                            // プレイ回数をインクリメント
+                            appViewModel.settingsManager.incrementPlayCount(for: GameType.tomodachi.id)
+                            
                             viewModel.startGame()
                         } label: {
                             Text("スタート")
@@ -124,6 +127,8 @@ struct TomodachiGameView: View {
                 actualSize: viewModel.fingerSize,
                 sizeMargin: viewModel.sizeMargin,
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.tomodachi.id)
                     viewModel.reset()
                 },
                 onBackToSelection: {

@@ -57,12 +57,14 @@ class PenaltyGameViewModel: ObservableObject {
     }
     
     private func setupAudioSession() {
+        #if os(iOS)
         do {
             try AVAudioSession.sharedInstance().setCategory(.soloAmbient, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             print("Failed to set audio session category: \(error)")
         }
+        #endif
     }
     
     private func loadPlayers() {
@@ -83,6 +85,18 @@ class PenaltyGameViewModel: ObservableObject {
         guard !trimmed.isEmpty else { return }
         players.append(PenaltyPlayer(name: trimmed))
         newMemberName = ""
+        savePlayers()
+    }
+    
+    func addMember(name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        players.append(PenaltyPlayer(name: trimmed))
+        savePlayers()
+    }
+
+    func clearAllMembers() {
+        players.removeAll()
         savePlayers()
     }
     
@@ -320,12 +334,14 @@ class PenaltyGameViewModel: ObservableObject {
         guard UserDefaults.standard.bool(forKey: "soundEnabled") else { return }
         
         // Ensure sounds obey silent mode
+        #if os(iOS)
         do {
             try AVAudioSession.sharedInstance().setCategory(.soloAmbient, mode: .default)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
-            print("Failed to set audio session category: \(error)")
+            // Silent error handling for production
         }
+        #endif
 
         switch soundName {
         case "drumroll":
@@ -336,7 +352,9 @@ class PenaltyGameViewModel: ObservableObject {
             AudioServicesPlaySystemSound(1005) // Alarm - ORIGINAL
         case "thunder":
             AudioServicesPlaySystemSound(1304) // Alert
+            #if os(iOS)
             AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            #endif
         case "item_get":
             AudioServicesPlaySystemSound(1322) // Tri-tone - ORIGINAL
         case "curse":

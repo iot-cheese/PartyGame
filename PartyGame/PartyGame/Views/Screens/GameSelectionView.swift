@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct GameSelectionView: View {
     @ObservedObject var viewModel: AppViewModel
@@ -14,6 +15,8 @@ struct GameSelectionView: View {
     private let psychologyGames: [GameType] = [.wordWolf, .shimoneta]
     private let senseGames: [GameType] = [.grandparentGuess, .fiveSecondStop, .tomodachi, .dragonflyStop, .drawingShiritori, .senseGame]
     private let luckGames: [GameType] = [.penaltyGame]
+    
+    // Add State for unlocking removed
     
     let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -172,6 +175,7 @@ struct GameSelectionView: View {
                 ForEach(games) { game in
                     GameThumbnailView(game: game, onTap: {
                         viewModel.selectGame(game)
+                        checkAndRequestReview(for: game)
                     })
                     .id(game.id)
                 }
@@ -201,6 +205,36 @@ struct GameSelectionView: View {
         }
         .padding(.horizontal)
         .padding(.top, 10)
+    }
+    
+    private func checkAndRequestReview(for game: GameType) {
+        // まだレビュー依頼を出していない場合のみチェック
+        if !viewModel.settingsManager.hasRequestedReview {
+            // 今回遊ぶゲームを記録
+            viewModel.settingsManager.playedGames.insert(game.id)
+            
+            // プレイ回数をインクリメント
+            viewModel.settingsManager.incrementPlayCount(for: game.id)
+            let playCount = viewModel.settingsManager.gamePlayCounts[game.id] ?? 0
+            
+            // 条件1: プレイしたゲームの種類が8種類以上になったらレビュー依頼
+            let condition1 = viewModel.settingsManager.playedGames.count >= 8
+            
+            // 条件2: 同じゲームを10回プレイした場合
+            let condition2 = playCount >= 10
+            
+            if condition1 || condition2 {
+                requestReview()
+                viewModel.settingsManager.hasRequestedReview = true
+            }
+        }
+    }
+    
+    private func requestReview() {
+        // iOS 14.0以降での実装
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            SKStoreReviewController.requestReview(in: windowScene)
+        }
     }
 }
 

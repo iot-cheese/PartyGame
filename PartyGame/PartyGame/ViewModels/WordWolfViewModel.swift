@@ -80,6 +80,19 @@ class WordWolfViewModel: ObservableObject {
         }
     }
     
+    func addMember(name: String) {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            players.append(WordWolfPlayer(name: trimmed))
+            saveMembers()
+        }
+    }
+
+    func clearAllMembers() {
+        players.removeAll()
+        saveMembers()
+    }
+    
     func removeMember(at offsets: IndexSet) {
         players.remove(atOffsets: offsets)
         saveMembers()

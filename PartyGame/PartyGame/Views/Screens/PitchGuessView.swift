@@ -55,6 +55,9 @@ struct PitchGuessView: View {
                     Spacer()
                     
                     Button {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.pitchGuess.id)
+                        
                         viewModel.startGame()
                     } label: {
                         Text("スタート")
@@ -148,6 +151,8 @@ struct PitchGuessView: View {
             PitchAnswerDialog(
                 note: viewModel.currentNote,
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.pitchGuess.id)
                     viewModel.playAgain()
                 },
                 onBackToSelection: {

@@ -51,8 +51,6 @@ struct SecretQuestionView: View {
                     Spacer().frame(height: 50)
                 }
                 
-                Spacer()
-                
                 switch viewModel.currentPhase {
                 case .entry:
                     entryView
@@ -205,6 +203,9 @@ struct SecretQuestionView: View {
             
             if viewModel.isHost {
                 Button(action: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.secretQuestion.id)
+                    
                     viewModel.startGame()
                 }) {
                     Text("ゲーム開始")

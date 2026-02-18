@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct DrawingShiritoriView: View {
-    @ObservedObject var appViewModel: AppViewModel
     @StateObject private var viewModel = DrawingShiritoriViewModel()
     @State private var showingMemberInput = false
+    @ObservedObject var appViewModel: AppViewModel
     
     var body: some View {
         ZStack {
@@ -34,7 +34,7 @@ struct DrawingShiritoriView: View {
             }
         }
         .sheet(isPresented: $showingMemberInput) {
-            DrawingShiritoriMemberInputView(viewModel: viewModel)
+            DrawingShiritoriMemberInputView(viewModel: viewModel, settingsManager: appViewModel.settingsManager)
         }
     }
 }
@@ -127,6 +127,13 @@ struct DrawingShiritoriSetupView: View {
                     
                     // Start Button
                     Button(action: {
+                        // 履歴保存
+                        let memberNames = viewModel.players.map { $0.name }
+                        appViewModel.settingsManager.saveMemberHistory(gameId: SettingsManager.sharedMemberHistoryId, members: memberNames)
+                        
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.drawingShiritori.id)
+                        
                         viewModel.startGame()
                     }) {
                         Text("スタート")
@@ -285,7 +292,9 @@ struct DrawingShiritoriPreviousView: View {
 // MARK: - Member Input View
 struct DrawingShiritoriMemberInputView: View {
     @ObservedObject var viewModel: DrawingShiritoriViewModel
+    @ObservedObject var settingsManager: SettingsManager
     @Environment(\.presentationMode) var presentationMode
+    @State private var showingHistory = false
     
     var body: some View {
         NavigationView {
@@ -323,9 +332,26 @@ struct DrawingShiritoriMemberInputView: View {
                 }
             }
             .navigationTitle("メンバー入力")
-            .navigationBarItems(trailing: Button("完了") {
-                presentationMode.wrappedValue.dismiss()
-            })
+            .navigationBarItems(
+                leading: Button(action: {
+                    showingHistory = true
+                }) {
+                    Image(systemName: "clock.arrow.circlepath")
+                    Text("履歴")
+                },
+                trailing: Button("完了") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            )
+            .sheet(isPresented: $showingHistory) {
+                 MemberHistoryView(settingsManager: settingsManager, gameId: SettingsManager.sharedMemberHistoryId) { selectedMembers in
+                     viewModel.clearAllMembers()
+                     for name in selectedMembers {
+                         viewModel.newMemberName = name
+                         viewModel.addMember()
+                     }
+                 }
+            }
         }
     }
 }
@@ -532,7 +558,6 @@ struct DrawingShiritoriSummaryView: View {
             ForEach(0..<totalRows, id: \.self) { rowIndex in
                 // 偶数行は左から右、奇数行は右から左
                 let isLeftToRight = rowIndex % 2 == 0
-                let itemsInThisRow = min(itemsPerRow, totalItems - rowIndex * itemsPerRow)
                 
                 // 各行のアイテム
                 HStack(spacing: 5) {
@@ -701,6 +726,9 @@ struct DrawingShiritoriResultView: View {
             
             HStack(spacing: 20) {
                 Button(action: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.drawingShiritori.id)
+                    
                     viewModel.resetGame()
                 }) {
                     Text("ゲームを続ける")
@@ -774,7 +802,6 @@ struct DrawingShiritoriResultView: View {
             ForEach(0..<totalRows, id: \.self) { rowIndex in
                 // 偶数行は左から右、奇数行は右から左
                 let isLeftToRight = rowIndex % 2 == 0
-                let itemsInThisRow = min(itemsPerRow, totalItems - rowIndex * itemsPerRow)
                 
                 // 各行のアイテム
                 HStack(spacing: 5) {

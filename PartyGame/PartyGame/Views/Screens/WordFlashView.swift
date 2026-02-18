@@ -51,6 +51,9 @@ struct WordFlashView: View {
                     Spacer()
                     
                     Button {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.wordFlash.id)
+                        
                         viewModel.startGame()
                     } label: {
                         Text("スタート")
@@ -177,6 +180,8 @@ struct WordFlashView: View {
         .fullScreenCover(isPresented: $viewModel.showResultModal) {
             WordFlashResultDialog(
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.wordFlash.id)
                     viewModel.playAgain()
                 },
                 onBackToSelection: {

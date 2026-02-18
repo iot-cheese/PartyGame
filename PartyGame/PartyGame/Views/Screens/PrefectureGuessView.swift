@@ -55,6 +55,9 @@ struct PrefectureGuessView: View {
                     Spacer()
                     
                     Button {
+                        // プレイ回数をインクリメント
+                        appViewModel.settingsManager.incrementPlayCount(for: GameType.prefectureGuess.id)
+                        
                         viewModel.startGame()
                     } label: {
                         Text("スタート")
@@ -154,6 +157,8 @@ struct PrefectureGuessView: View {
             PrefectureAnswerDialog(
                 prefecture: viewModel.currentPrefecture,
                 onContinue: {
+                    // プレイ回数をインクリメント
+                    appViewModel.settingsManager.incrementPlayCount(for: GameType.prefectureGuess.id)
                     viewModel.playAgain()
                 },
                 onBackToSelection: {

@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct PenaltyGameView: View {
-    @ObservedObject var appViewModel: AppViewModel
     @StateObject private var viewModel = PenaltyGameViewModel()
     @State private var showingMemberInput = false
+    @ObservedObject var appViewModel: AppViewModel
     
     var body: some View {
         ZStack {
@@ -37,7 +37,7 @@ struct PenaltyGameView: View {
             }
         }
         .sheet(isPresented: $showingMemberInput) {
-            PenaltyMemberInputView(viewModel: viewModel)
+            PenaltyMemberInputView(viewModel: viewModel, settingsManager: appViewModel.settingsManager)
         }
         .sheet(isPresented: $viewModel.showItemSelector) {
             PenaltyItemSelectorView(viewModel: viewModel)
@@ -119,6 +119,13 @@ struct PenaltySetupView: View {
             
             // Start Button
             Button(action: {
+                // 履歴保存
+                let memberNames = viewModel.players.map { $0.name }
+                appViewModel.settingsManager.saveMemberHistory(gameId: SettingsManager.sharedMemberHistoryId, members: memberNames)
+                
+                // プレイ回数をインクリメント
+                appViewModel.settingsManager.incrementPlayCount(for: GameType.penaltyGame.id)
+                
                 viewModel.startGame()
             }) {
                 Text("スタート")
@@ -140,13 +147,14 @@ struct PenaltySetupView: View {
 // MARK: - Member Input View
 struct PenaltyMemberInputView: View {
     @ObservedObject var viewModel: PenaltyGameViewModel
+    @ObservedObject var settingsManager: SettingsManager
     @Environment(\.presentationMode) var presentationMode
+    @State private var showingHistory = false
     
     // Custom dark theme for sheet
-    init(viewModel: PenaltyGameViewModel) {
+    init(viewModel: PenaltyGameViewModel, settingsManager: SettingsManager) {
         self.viewModel = viewModel
-        // Attempt to style list generally, but SwiftUI Lists are tricky to theme completely without introspection or modifiers per row.
-        // We will just do standard list but maybe force dark scheme if possible or just standard.
+        self.settingsManager = settingsManager
     }
     
     var body: some View {
@@ -191,9 +199,25 @@ struct PenaltyMemberInputView: View {
                 .padding(.bottom)
             }
             .navigationTitle("メンバー入力")
-            .navigationBarItems(trailing: Button("完了") {
-                presentationMode.wrappedValue.dismiss()
-            })
+            .navigationBarItems(
+                leading: Button(action: {
+                    showingHistory = true
+                }) {
+                    Image(systemName: "clock.arrow.circlepath")
+                    Text("履歴")
+                },
+                trailing: Button("完了") {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            )
+            .sheet(isPresented: $showingHistory) {
+                 MemberHistoryView(settingsManager: settingsManager, gameId: SettingsManager.sharedMemberHistoryId) { selectedMembers in
+                     viewModel.clearAllMembers()
+                     for name in selectedMembers {
+                         viewModel.addMember(name: name)
+                     }
+                 }
+            }
         }
     }
 }
