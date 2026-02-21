@@ -23,14 +23,12 @@ struct WordWolfView: View {
             case .inputMembers:
                 // Should not happen as main state if using sheet/modal
                 EmptyView()
-            case .checkingRole:
+            case .checkingRole: 
                 WordWolfRoleCheckView(viewModel: viewModel)
             case .playing:
                 WordWolfGameView(viewModel: viewModel)
             case .result:
-                // Handled via fullScreenCover usually, but if state is result, we can show it.
-                // Spec says modal.
-                WordWolfGameView(viewModel: viewModel) // Keep showing game view behind?
+                WordWolfResultView(viewModel: viewModel, appViewModel: appViewModel)
             }
         }
         .sheet(isPresented: $showingMemberInput) {
