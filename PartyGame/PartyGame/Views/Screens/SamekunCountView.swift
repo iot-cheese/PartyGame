@@ -12,26 +12,28 @@ struct SamekunCountView: View {
     @ObservedObject var appViewModel: AppViewModel
     
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                // 背景色
-                Color.blue.opacity(0.1).ignoresSafeArea()
-                
-                VStack {
-                    if viewModel.gameState == .ready {
-                        // Start Screen
-                        readyView
-                    } else {
-                        // Game Screen
-                        gameView
+        ZStack {
+            GeometryReader { geo in
+                ZStack {
+                    // 背景色
+                    Color.blue.opacity(0.1).ignoresSafeArea()
+                    
+                    VStack {
+                        if viewModel.gameState == .ready {
+                            // Start Screen
+                            readyView
+                        } else {
+                            // Game Screen
+                            gameView
+                        }
                     }
+                    .frame(width: geo.size.height, height: geo.size.width) // 横幅と高さを入れ替え
                 }
-                .frame(width: geo.size.height, height: geo.size.width) // 横幅と高さを入れ替え
+                .rotationEffect(.degrees(90)) // 90度回転して横画面化
+                .position(x: geo.size.width / 2, y: geo.size.height / 2)
             }
-            .rotationEffect(.degrees(90)) // 90度回転して横画面化
-            .position(x: geo.size.width / 2, y: geo.size.height / 2)
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
         .navigationBarHidden(true)
         .fullScreenCover(isPresented: $viewModel.showResultModal) {
             SamekunResultDialog(

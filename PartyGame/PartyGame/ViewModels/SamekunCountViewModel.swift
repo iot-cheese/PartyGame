@@ -39,6 +39,7 @@ class SamekunCountViewModel: ObservableObject {
     // private var specialSharkCount: Int = 0 // Removed
     // private var maxSpecialSharks: Int = 0 // Removed
     private var sharkQueue: [SharkInstance] = [] // Queue for sharks to spawn
+    private var initialSharkCount: Int = 0
     
     func startGame() {
         resetGame()
@@ -50,7 +51,10 @@ class SamekunCountViewModel: ObservableObject {
         gameTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             if self.timeRemaining > 0 {
-                self.timeRemaining -= 0.1
+                self.timeRemaining = max(0, self.timeRemaining - 0.1)
+                if self.timeRemaining == 0 {
+                    self.finishGame()
+                }
             } else {
                 self.finishGame()
             }
@@ -82,7 +86,10 @@ class SamekunCountViewModel: ObservableObject {
     
     func showAnswer() {
         gameState = .showingResult
-        showResultModal = true
+        // 少し遅延させてからモーダルを表示することで、SwiftUIの描画バグを回避する
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.showResultModal = true
+        }
     }
     
     private func finishGame() {
@@ -97,11 +104,11 @@ class SamekunCountViewModel: ObservableObject {
     private func prepareSharkQueue() {
         sharkQueue = []
         
-        // 1. Determine Correct Count (9 to 15)
-        let correctCount = Int.random(in: 12...18)
+        // 1. Determine Correct Count
+        let correctCount = Int.random(in: 9...18)
         
-        // 2. Determine Dummy Count (2x Correct Count)
-        let dummyCount = Int.random(in: 25...30)
+        // 2. Determine Dummy Count
+        let dummyCount = Int.random(in: 23...28)
         
         // 3. Determine Up Count (0 to 6)
         let upCount = Int.random(in: 2...6)
@@ -124,6 +131,7 @@ class SamekunCountViewModel: ObservableObject {
         
         // Shuffle the queue
         sharkQueue.shuffle()
+        initialSharkCount = sharkQueue.count
     }
     
     private func randomDuration() -> Double {
@@ -141,10 +149,10 @@ class SamekunCountViewModel: ObservableObject {
         // Calculate interval to distribute all sharks within a target duration (e.g. 13 seconds)
         // to ensure they all appear before time is up.
         let targetSpawnDuration = 13.0
-        let remainingSharks = Double(sharkQueue.count)
+        let totalSharks = Double(initialSharkCount)
         
         // Base interval
-        let baseInterval = targetSpawnDuration / (remainingSharks + 5) // +5 as buffer
+        let baseInterval = targetSpawnDuration / (totalSharks + 5) // +5 as buffer
         
         // Add some randomness
         let nextInterval = max(0.1, baseInterval * Double.random(in: 0.5...1.5))
